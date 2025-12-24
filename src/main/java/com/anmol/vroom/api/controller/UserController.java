@@ -30,4 +30,10 @@ public class UserController {
     public ResponseEntity<Void> rideHistory() {
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/test-protected")
+    public String testProtected() {
+        return "JWT is working";
+    }
+
 }
