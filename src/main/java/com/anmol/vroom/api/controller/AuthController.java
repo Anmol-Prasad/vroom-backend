@@ -1,0 +1,34 @@
+package com.anmol.vroom.api.controller;
+
+import com.anmol.vroom.api.dto.AuthResponse;
+import com.anmol.vroom.api.dto.LoginRequest;
+import com.anmol.vroom.domain.service.AuthService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+// Marks this class as a controller
+// Handles all the HTTP requests and all the request converted from JSON to Java
+@RestController
+@RequestMapping("/api/auth")
+@RequiredArgsConstructor
+public class AuthController {
+
+    private final AuthService authService;
+
+    @PostMapping("/login")
+    public AuthResponse login(@RequestBody LoginRequest request){
+        return authService.login(request);
+    }
+
+
+//    @PostMapping("/register")
+//    public ResponseEntity<Void> register(){
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @GetMapping("/me")
+//    public ResponseEntity<Void> me(){
+//        return ResponseEntity.ok().build();
+//    }
+}
