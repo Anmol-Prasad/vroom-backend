@@ -1,8 +1,11 @@
 package com.anmol.vroom.api.controller;
 
 import com.anmol.vroom.api.dto.request.UpdateProfileRequestDto;
+import com.anmol.vroom.api.dto.request.WalletAddRequestDto;
+import com.anmol.vroom.api.dto.response.UserResponseDto;
 import com.anmol.vroom.domain.entity.User;
 import com.anmol.vroom.domain.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,7 +33,18 @@ public class UserController {
         return userService.updateProfile(userId, request);
     }
 
+    @PostMapping("/wallet/add")
+    public UserResponseDto addWalletBalance(@RequestBody @Valid WalletAddRequestDto request){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        Long userId = Long.valueOf(authentication.getName());
+
+        Double amount = request.getAmount();
+
+        User user = userService.addToWallet(userId, amount);
+
+        return new UserResponseDto(userId, user.getName(), user.getEmail(), user.getPhone(), user.getWalletBalance());
+    }
 //    @GetMapping("/me")
 //    public ResponseEntity<Void> getProfile(){
 //        return ResponseEntity.ok().build();

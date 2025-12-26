@@ -4,6 +4,7 @@ import com.anmol.vroom.api.dto.request.UpdateProfileRequestDto;
 import com.anmol.vroom.domain.entity.User;
 import com.anmol.vroom.domain.repository.UserRepository;
 import com.anmol.vroom.domain.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,24 @@ public class UserServiceImpl implements UserService {
             user.setPhone(request.getPhone());
         }
 
+        // No dirty checking here since we didn't do @Transactional
+        // Dirty checking works only with Transaction
         return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public User addToWallet(Long userId, Double amount) {
+        if(amount <= 0){
+            throw new RuntimeException("Amount to be added must be positive");
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not found"));
+
+        Double newBalance = user.getWalletBalance() + amount;
+
+        user.setWalletBalance(newBalance);
+
+        return user;
     }
 }

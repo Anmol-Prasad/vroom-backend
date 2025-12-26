@@ -7,4 +7,6 @@ public interface UserService {
     User getCurrentUser(Long userId);
 
     User updateProfile(Long userId, UpdateProfileRequestDto request);
+
+    User addToWallet(Long userId, Double amount);
 }
