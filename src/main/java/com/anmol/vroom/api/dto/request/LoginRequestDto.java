@@ -1,10 +1,9 @@
-package com.anmol.vroom.api.dto;
+package com.anmol.vroom.api.dto.request;
 
-import lombok.Data;
 import lombok.Getter;
 
 @Getter
-public class LoginRequest {
+public class LoginRequestDto {
     private String email;
     private String password;
 }

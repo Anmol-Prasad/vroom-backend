@@ -1,8 +1,8 @@
 package com.anmol.vroom.domain.service;
 
-import com.anmol.vroom.api.dto.AuthResponse;
-import com.anmol.vroom.api.dto.LoginRequest;
+import com.anmol.vroom.api.dto.response.AuthResponseDto;
+import com.anmol.vroom.api.dto.request.LoginRequestDto;
 
 public interface AuthService {
-    AuthResponse login(LoginRequest request);
+    AuthResponseDto login(LoginRequestDto request);
 }

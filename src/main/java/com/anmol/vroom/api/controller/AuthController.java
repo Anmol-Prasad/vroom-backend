@@ -1,10 +1,9 @@
 package com.anmol.vroom.api.controller;
 
-import com.anmol.vroom.api.dto.AuthResponse;
-import com.anmol.vroom.api.dto.LoginRequest;
+import com.anmol.vroom.api.dto.response.AuthResponseDto;
+import com.anmol.vroom.api.dto.request.LoginRequestDto;
 import com.anmol.vroom.domain.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 // Marks this class as a controller
@@ -17,7 +16,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request){
+    public AuthResponseDto login(@RequestBody LoginRequestDto request){
         return authService.login(request);
     }
 

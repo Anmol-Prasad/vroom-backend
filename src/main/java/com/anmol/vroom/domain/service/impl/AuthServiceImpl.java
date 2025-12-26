@@ -1,7 +1,7 @@
 package com.anmol.vroom.domain.service.impl;
 
-import com.anmol.vroom.api.dto.AuthResponse;
-import com.anmol.vroom.api.dto.LoginRequest;
+import com.anmol.vroom.api.dto.response.AuthResponseDto;
+import com.anmol.vroom.api.dto.request.LoginRequestDto;
 import com.anmol.vroom.domain.entity.User;
 import com.anmol.vroom.domain.repository.UserRepository;
 import com.anmol.vroom.domain.service.AuthService;
@@ -18,7 +18,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
 
     @Override
-    public AuthResponse login(LoginRequest request){
+    public AuthResponseDto login(LoginRequestDto request){
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new RuntimeException("Email not registered"));
 
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
@@ -27,6 +27,6 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtService.generateToken(user.getId(), user.getRole().name());
 
-        return new AuthResponse(token);
+        return new AuthResponseDto(token);
     }
 }

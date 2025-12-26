@@ -1,11 +1,13 @@
 package com.anmol.vroom.domain.entity;
 
 import com.anmol.vroom.domain.enums.RideStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Getter
 @Setter

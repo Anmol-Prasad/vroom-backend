@@ -1,10 +1,10 @@
-package com.anmol.vroom.api.dto;
+package com.anmol.vroom.api.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AuthResponse {
+public class AuthResponseDto {
     private String token;
 }
