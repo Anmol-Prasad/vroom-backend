@@ -15,4 +15,6 @@ public interface RideService {
     Ride startRide(Long rideId, Long driverId);
 
     Ride completeRide(Long rideId, Long driverId);
+
+    List<Ride> getRideHistory(Long userId);
 }

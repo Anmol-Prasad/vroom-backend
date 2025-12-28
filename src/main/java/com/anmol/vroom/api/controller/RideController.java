@@ -1,6 +1,7 @@
 package com.anmol.vroom.api.controller;
 
 import com.anmol.vroom.api.dto.request.RideRequestDto;
+import com.anmol.vroom.api.dto.response.RideHistoryResponseDto;
 import com.anmol.vroom.api.dto.response.RideResponseDto;
 import com.anmol.vroom.domain.entity.Ride;
 import com.anmol.vroom.domain.service.RideService;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -67,6 +70,8 @@ public class RideController {
 
         return new RideResponseDto(ride.getId(), ride.getStatus(), ride.getFare(), ride.getRequestedAt());
     }
+
+
 
 //    @PostMapping("/request")
 //    public ResponseEntity<Void> requestRide() {

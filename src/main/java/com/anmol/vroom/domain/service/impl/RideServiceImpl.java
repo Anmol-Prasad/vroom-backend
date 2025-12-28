@@ -103,4 +103,10 @@ public class RideServiceImpl implements RideService {
 
         return ride;
     }
+
+    @Override
+    public List<Ride> getRideHistory(Long userId) {
+        // First we passed riderId then we passed driverId
+        return rideRepository.findRidesByRiderIdOrDriverIdOrderByRequestedAtDesc(userId, userId);
+    }
 }
