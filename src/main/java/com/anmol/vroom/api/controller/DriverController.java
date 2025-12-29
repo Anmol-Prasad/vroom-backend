@@ -2,11 +2,14 @@ package com.anmol.vroom.api.controller;
 
 import com.anmol.vroom.api.dto.response.RideResponseDto;
 import com.anmol.vroom.domain.service.RideService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+@Tag(name = "Drivers", description = "Driver availability and ride handling")
 @RestController
 @RequestMapping("/api/drivers")
 @RequiredArgsConstructor

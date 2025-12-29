@@ -3,9 +3,12 @@ package com.anmol.vroom.api.controller;
 import com.anmol.vroom.api.dto.response.AuthResponseDto;
 import com.anmol.vroom.api.dto.request.LoginRequestDto;
 import com.anmol.vroom.domain.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+
+@Tag(name = "Auth", description = "Authentication APIs")
 // Marks this class as a controller
 // Handles all the HTTP requests and all the request converted from JSON to Java
 @RestController

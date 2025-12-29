@@ -7,6 +7,7 @@ import com.anmol.vroom.api.dto.response.UserResponseDto;
 import com.anmol.vroom.domain.entity.User;
 import com.anmol.vroom.domain.service.RideService;
 import com.anmol.vroom.domain.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Users", description = "User profile, wallet, and location APIs")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")

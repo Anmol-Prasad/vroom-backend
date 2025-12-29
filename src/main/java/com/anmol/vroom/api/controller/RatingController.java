@@ -3,12 +3,15 @@ package com.anmol.vroom.api.controller;
 import com.anmol.vroom.api.dto.request.RateRideRequestDto;
 import com.anmol.vroom.domain.entity.Rating;
 import com.anmol.vroom.domain.service.RatingService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+@Tag(name = "Rating", description = "Rider and Driver rating APIs")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
