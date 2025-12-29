@@ -1,5 +1,7 @@
 package com.anmol.vroom.security.config;
 
+import com.anmol.vroom.security.exception.JwtAccessDeniedHandler;
+import com.anmol.vroom.security.exception.JwtAuthenticationEntryPoint;
 import com.anmol.vroom.security.filter.JwtAuthenticationFilter;
 import com.anmol.vroom.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,9 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
 
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -38,6 +43,10 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
