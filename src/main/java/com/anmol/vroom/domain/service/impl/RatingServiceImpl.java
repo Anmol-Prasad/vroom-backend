@@ -1,5 +1,6 @@
 package com.anmol.vroom.domain.service.impl;
 
+import com.anmol.vroom.api.dto.response.RatingResponseDto;
 import com.anmol.vroom.domain.entity.Rating;
 import com.anmol.vroom.domain.entity.Ride;
 import com.anmol.vroom.domain.entity.User;
@@ -65,7 +66,19 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public List<Rating> getRatingsForUser(Long userId) {
-        return ratingRepository.findByRateeIdOrderByIdDesc(userId);
+    public List<RatingResponseDto> getRatingsForUser(Long userId) {
+
+        List<Rating> ratings = ratingRepository.findByRateeIdOrderByIdDesc(userId);
+
+        return ratings.stream()
+                .map(rating -> new RatingResponseDto(
+                        rating.getRide().getId(),
+                        rating.getScore(),
+                        rating.getReview(),
+                        rating.getRater().getId(),
+                        rating.getRatee().getId()
+                ))
+                .toList();
     }
+
 }

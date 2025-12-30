@@ -1,10 +1,10 @@
 package com.anmol.vroom.domain.service;
 
-import com.anmol.vroom.domain.entity.Rating;
+import com.anmol.vroom.api.dto.response.RatingResponseDto;
 
 import java.util.List;
 
 public interface RatingService {
     void rateRide(Long rideId, int score, String review);
-    List<Rating> getRatingsForUser(Long userId);
+    List<RatingResponseDto> getRatingsForUser(Long userId);
 }

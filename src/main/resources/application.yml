@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/vroomDB
     username: postgres
-    password: postgres   # use what you set during install
+    password: anmol   # use what you set during install
 
   jpa:
     hibernate:

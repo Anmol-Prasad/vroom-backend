@@ -1,9 +1,11 @@
 package com.anmol.vroom.api.controller;
 
 import com.anmol.vroom.api.dto.request.RateRideRequestDto;
+import com.anmol.vroom.api.dto.response.RatingResponseDto;
 import com.anmol.vroom.domain.entity.Rating;
 import com.anmol.vroom.domain.service.RatingService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +22,13 @@ public class RatingController {
     private final RatingService ratingService;
 
     @PostMapping("/rides/{id}/rate")
-    public ResponseEntity<Void> rateRide(@PathVariable Long id, @RequestBody RateRideRequestDto request){
+    public ResponseEntity<Void> rateRide(@PathVariable Long id, @RequestBody @Valid RateRideRequestDto request){
        ratingService.rateRide(id, request.getScore(), request.getReview());
        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/users/{id}/ratings")
-    public ResponseEntity<List<Rating>> getRatingsForUser(@PathVariable Long id){
+    public ResponseEntity<List<RatingResponseDto>> getRatingsForUser(@PathVariable Long id){
         return ResponseEntity.ok(
                 ratingService.getRatingsForUser(id)
         );
