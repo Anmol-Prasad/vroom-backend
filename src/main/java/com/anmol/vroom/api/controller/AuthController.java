@@ -1,11 +1,16 @@
 package com.anmol.vroom.api.controller;
 
+import com.anmol.vroom.api.dto.request.RegisterRequestDto;
 import com.anmol.vroom.api.dto.response.AuthResponseDto;
 import com.anmol.vroom.api.dto.request.LoginRequestDto;
 import com.anmol.vroom.domain.service.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @Tag(name = "Auth", description = "Authentication APIs")
@@ -23,6 +28,11 @@ public class AuthController {
         return authService.login(request);
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequestDto request){
+        authService.register(request);
+        return ResponseEntity.status(201).body(Map.of("message", "User registered successfully"));
+    }
 
 //    @PostMapping("/register")
 //    public ResponseEntity<Void> register(){

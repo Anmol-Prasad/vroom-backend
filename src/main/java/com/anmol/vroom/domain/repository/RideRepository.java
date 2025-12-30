@@ -10,4 +10,6 @@ public interface RideRepository extends JpaRepository<Ride, Long> {
     public List<Ride> findRidesByStatusAndDriverIsNull(RideStatus status);
 
     public List<Ride> findRidesByRiderIdOrDriverIdOrderByRequestedAtDesc(Long riderId, Long driverId);
+
+
 }

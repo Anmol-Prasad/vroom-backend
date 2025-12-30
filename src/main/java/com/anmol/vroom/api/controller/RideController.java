@@ -1,7 +1,7 @@
 package com.anmol.vroom.api.controller;
 
 import com.anmol.vroom.api.dto.request.RideRequestDto;
-import com.anmol.vroom.api.dto.response.RideHistoryResponseDto;
+import com.anmol.vroom.api.dto.response.RideEstimateResponseDto;
 import com.anmol.vroom.api.dto.response.RideResponseDto;
 import com.anmol.vroom.domain.entity.Ride;
 import com.anmol.vroom.domain.service.RideService;
@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "Rides", description = "Ride lifecycle APIs")
 @RestController
@@ -72,6 +70,55 @@ public class RideController {
 
         return new RideResponseDto(ride.getId(), ride.getStatus(), ride.getFare(), ride.getRequestedAt());
     }
+
+    @GetMapping("/{id}")
+    public RideResponseDto getRide(@PathVariable Long id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.valueOf(authentication.getName());
+
+        Ride ride = rideService.getRideById(id, userId);
+
+        return new RideResponseDto(
+                ride.getId(),
+                ride.getStatus(),
+                ride.getFare(),
+                ride.getRequestedAt()
+        );
+
+    }
+
+    @PostMapping("/{id}/cancel")
+    public RideResponseDto cancelRide(@PathVariable Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.valueOf(authentication.getName());
+
+        Ride ride = rideService.cancelRide(id, userId);
+
+        return new RideResponseDto(
+                ride.getId(),
+                ride.getStatus(),
+                ride.getFare(),
+                ride.getRequestedAt()
+        );
+    }
+
+    @GetMapping("/fare/estimate")
+    public RideEstimateResponseDto estimateRide(
+            @RequestParam double pickupLat,
+            @RequestParam double pickupLong,
+            @RequestParam double dropLat,
+            @RequestParam double dropLong
+    ) {
+        return rideService.estimateFare(
+                pickupLat,
+                pickupLong,
+                dropLat,
+                dropLong
+        );
+    }
+
+
+
 
 
 

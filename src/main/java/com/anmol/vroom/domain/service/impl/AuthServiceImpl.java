@@ -1,11 +1,13 @@
 package com.anmol.vroom.domain.service.impl;
 
+import com.anmol.vroom.api.dto.request.RegisterRequestDto;
 import com.anmol.vroom.api.dto.response.AuthResponseDto;
 import com.anmol.vroom.api.dto.request.LoginRequestDto;
 import com.anmol.vroom.domain.entity.User;
 import com.anmol.vroom.domain.repository.UserRepository;
 import com.anmol.vroom.domain.service.AuthService;
 import com.anmol.vroom.security.jwt.JwtService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,5 +30,29 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtService.generateToken(user.getId(), user.getRole().name());
 
         return new AuthResponseDto(token);
+    }
+
+    @Override
+    @Transactional
+    public void register(RegisterRequestDto request) {
+
+        if(userRepository.existsByEmail(request.getEmail())){
+            throw new IllegalStateException("Email already exists");
+        }
+
+        if(userRepository.existsByEmail(request.getPhone())){
+            throw new IllegalStateException("Phone already exists");
+        }
+
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .walletBalance(0.0)
+                .build();
+
+            userRepository.save(user);
     }
 }

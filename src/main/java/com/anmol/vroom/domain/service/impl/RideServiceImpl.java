@@ -1,6 +1,7 @@
 package com.anmol.vroom.domain.service.impl;
 
 import com.anmol.vroom.api.dto.request.RideRequestDto;
+import com.anmol.vroom.api.dto.response.RideEstimateResponseDto;
 import com.anmol.vroom.domain.entity.Location;
 import com.anmol.vroom.domain.entity.Ride;
 import com.anmol.vroom.domain.entity.User;
@@ -29,7 +30,13 @@ public class RideServiceImpl implements RideService {
         Location pickupLocation = new Location(request.getPickupLat(), request.getPickupLong());
         Location dropLocation = new Location(request.getDropLong(), request.getDropLong());
 
-        double fare = 100.00; // TODO
+        double fare = calculateFare(
+                request.getPickupLat(),
+                request.getPickupLong(),
+                request.getDropLat(),
+                request.getDropLong()
+        );
+
 
         Ride ride = Ride.builder()
                 .rider(user)
@@ -109,4 +116,98 @@ public class RideServiceImpl implements RideService {
         // First we passed riderId then we passed driverId
         return rideRepository.findRidesByRiderIdOrDriverIdOrderByRequestedAtDesc(userId, userId);
     }
+
+    @Override
+    public Ride getRideById(Long rideId, Long userId) {
+        Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new IllegalArgumentException("Ride not found"));
+
+        boolean isRider = ride.getRider().getId().equals(userId);
+        boolean isDriver = ride.getDriver().getId() != null && ride.getDriver().getId().equals(userId);
+
+        if(!isRider && !isDriver){
+            throw new SecurityException("You are not allowed to view this ride");
+        }
+
+        return ride;
+    }
+
+    @Override
+    @Transactional
+    public Ride cancelRide(Long rideId, Long userId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new IllegalArgumentException("Ride not found"));
+
+        boolean isRider = ride.getRider().getId().equals(userId);
+        boolean isDriver = ride.getDriver() != null && ride.getDriver().getId().equals(userId);
+
+        if (!isRider && !isDriver) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "You are not allowed to cancel this ride"
+            );
+        }
+
+        if (ride.getStatus() == RideStatus.STARTED || ride.getStatus() == RideStatus.COMPLETED) {
+            throw new IllegalStateException("Ride cannot be cancelled now");
+        }
+
+        // Driver can cancel only if ACCEPTED
+        if (isDriver && ride.getStatus() != RideStatus.ACCEPTED) {
+            throw new IllegalStateException("Driver cannot cancel at this stage");
+        }
+
+        ride.setStatus(RideStatus.CANCELLED);
+        return ride;
+    }
+
+    @Override
+    public RideEstimateResponseDto estimateFare(double pickupLat, double pickupLong, double dropLat, double dropLong) {
+        double distanceKm = calculateDistanceKm(
+                pickupLat, pickupLong,
+                dropLat, dropLong
+        );
+
+        double fare = calculateFare(
+                pickupLat, pickupLong,
+                dropLat, dropLong
+        );
+
+        return new RideEstimateResponseDto(fare, distanceKm);
+    }
+
+
+    // HELPER FOR HAVERSINE
+    private double calculateFare(
+            double pickupLat,
+            double pickupLng,
+            double dropLat,
+            double dropLng
+    ) {
+        final double BASE_FARE = 50;
+        final double PER_KM_RATE = 10;
+
+        double distanceKm = calculateDistanceKm(
+                pickupLat, pickupLng,
+                dropLat, dropLng
+        );
+
+        return BASE_FARE + (distanceKm * PER_KM_RATE);
+    }
+
+    private double calculateDistanceKm(
+            double lat1, double lon1,
+            double lat2, double lon2
+    ) {
+        final int R = 6371; // Earth radius in KM
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
 }
