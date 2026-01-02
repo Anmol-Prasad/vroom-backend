@@ -4,6 +4,7 @@ import com.anmol.vroom.security.jwt.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -12,12 +13,21 @@ import java.sql.Date;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
-    private static final String SECRET_KEY = "eubhdahasd598745thasdfhbvnzmv64058979847taeaushfdbf7w5ryw87";
+
+    private final String secret;
+    private final long expirationTime;
+
+    public JwtServiceImpl(
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.expiration}") long expirationTime
+    ) {
+        this.secret = secret;
+        this.expirationTime = expirationTime;
+    }
 
     private SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(
-                SECRET_KEY.getBytes(StandardCharsets.UTF_8)
+                secret.getBytes(StandardCharsets.UTF_8)
         );
     }
 
@@ -27,7 +37,7 @@ public class JwtServiceImpl implements JwtService {
                 .subject(String.valueOf(userId))
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSecretKey())
                 .compact();
     }

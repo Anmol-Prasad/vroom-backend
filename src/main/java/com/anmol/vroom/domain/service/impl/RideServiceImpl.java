@@ -11,6 +11,8 @@ import com.anmol.vroom.domain.repository.UserRepository;
 import com.anmol.vroom.domain.service.RideService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +24,12 @@ public class RideServiceImpl implements RideService {
 
     public final RideRepository rideRepository;
     public final UserRepository userRepository;
+
+    @Value("${fare.base}")
+    private double baseFare;
+
+    @Value("${fare.per-km}")
+    private double perKmRate;
 
     @Override
     public Ride requestRide(Long riderId, RideRequestDto request) {
@@ -58,6 +66,7 @@ public class RideServiceImpl implements RideService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('DRIVER')")
     public Ride accceptRide(Long rideId, Long driverId) {
         Ride ride = rideRepository.findById(rideId).orElseThrow(()-> new RuntimeException("Ride not found"));
 
@@ -182,15 +191,16 @@ public class RideServiceImpl implements RideService {
             double dropLat,
             double dropLng
     ) {
-        final double BASE_FARE = 50;
-        final double PER_KM_RATE = 10;
+//        final double BASE_FARE = 50;
+//        final double PER_KM_RATE = 10;
+
 
         double distanceKm = calculateDistanceKm(
                 pickupLat, pickupLng,
                 dropLat, dropLng
         );
 
-        return BASE_FARE + (distanceKm * PER_KM_RATE);
+        return baseFare + (distanceKm * perKmRate);
     }
 
     private double calculateDistanceKm(
